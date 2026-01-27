@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asia | Frontend Developer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- HEADER -->
+    <header class="site-header">
+      <nav class="nav">
+        <h1 class="logo">Asia</h1>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <h2 class="gradient-text">Hi, I’m Asia 👋</h2>
+        <p>
+          Frontend developer in training focused on building clean, responsive,
+          and user-friendly websites using HTML and CSS.
+        </p>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" class="about">
+        <h2>About Me</h2>
+        <p>
+          I’m passionate about frontend development because it allows me to
+          combine creativity with problem-solving. I enjoy working with layout,
+          spacing, and visual hierarchy to create smooth user experiences.
+        </p>
+
+        <h3>Technical Skills</h3>
+        <ul class="skills">
+          <li>HTML5</li>
+          <li>CSS3</li>
+          <li>Flexbox</li>
+          <li>CSS Grid</li>
+          <li>Git & GitHub</li>
+        </ul>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects" class="projects">
+        <h2>Projects</h2>
+
+        <div class="project-grid">
+          <article class="project-card">
+            <h3>Personal Portfolio</h3>
+            <p>A responsive portfolio focused on layout and accessibility.</p>
+            <p class="tech">HTML, CSS</p>
+            <a href="#">View Project</a>
+          </article>
+
+          <article class="project-card">
+            <h3>Music Player UI</h3>
+            <p>Interface design exploring spacing and hover interactions.</p>
+            <p class="tech">HTML, CSS</p>
+            <a
+              href="https://github.com/The-Marcy-Lab-School-Assignments/swe-3-2-flexbox-grid-from-scratch-asiaidre30"
+              target="_blank"
+              rel="noopener noreferrer"
+              >View Project</a
+            >
+          </article>
+
+          <article class="project-card">
+            <h3>CLI Shopping Cart</h3>
+            <p>A JavaScript command-line application.</p>
+            <p class="tech">JavaScript</p>
+            <a
+              href="https://github.com/asiaidre30/shopping-list-cli"
+              target="_blank"
+              rel="noopener noreferrer"
+              >View Project</a
+            >
+          </article>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" class="contact">
+        <h2>Contact Me</h2>
+
+        <p>Let’s connect!</p>
+
+        <div class="social-links">
+          <!-- LinkedIn -->
+          <a
+            href="https://www.linkedin.com/in/asia-idrees"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+          >
+            <i class="fab fa-linkedin"></i>
+            LinkedIn
+          </a>
+
+          <!-- GitHub -->
+          <a
+            href="https://github.com/asiaidre30"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+          >
+            <i class="fab fa-github"></i>
+            GitHub
+          </a>
+
+          <!-- Email -->
+          <a href="mailto:asiaidrees283@gmail.com" aria-label="Email">
+            <i class="fas fa-envelope"></i>
+            Email
+          </a>
+        </div>
+
+        <form>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required />
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+
+          <button type="submit">Send Message</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
