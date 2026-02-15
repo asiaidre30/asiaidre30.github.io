@@ -3,91 +3,135 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Asia | Developer Portfolio</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>Asia.dev | Frontend Developer</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
+
   <body>
+    <!-- GALAXY BACKGROUND -->
+    <canvas id="galaxy"></canvas>
+
+    <!-- HEADER -->
     <header class="site-header">
       <nav class="nav">
-        <div class="logo">Asia.dev</div>
-
+        <h1 class="logo">Asia</h1>
         <ul class="nav-links">
           <li><a href="#about">About</a></li>
           <li><a href="#projects">Projects</a></li>
-          <li><a href="#skills">Skills</a></li>
           <li><a href="#game">Game</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
-
-        <button id="themeToggle">🌙</button>
+        <button id="modeToggle">🌙</button>
       </nav>
     </header>
 
-    <section class="hero">
-      <h1>Hello, I’m <span class="gradient-text">Asia</span></h1>
-      <p>IT Support Technician • JavaScript Developer • Problem Solver</p>
-      <button id="exploreBtn">Explore My Work ↓</button>
-    </section>
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <h2 class="gradient-text">Hi, I’m Asia</h2>
+        <p>
+          Creative frontend developer in training based in Brooklyn, New York. I
+          combine creativity, structure, and logic to build immersive web
+          experiences that feel smooth, intentional, and modern.
+        </p>
+      </section>
 
-    <section id="about">
-      <h2>About Me</h2>
-      <p>
-        I build interactive, structured web applications using JavaScript. I
-        enjoy turning logic into smooth user experiences and solving real
-        problems.
-      </p>
-    </section>
+      <!-- ABOUT -->
+      <section id="about" class="section about-section">
+        <h2>About Me</h2>
 
-    <section id="projects">
-      <h2>Projects</h2>
+        <div class="about-container">
+          <div class="about-card">
+            <p>
+              I’m a frontend developer in training based in Brooklyn, New York.
+              I love building immersive, responsive websites that blend
+              creativity and structure. I enjoy turning ideas into clean,
+              interactive user experiences that feel smooth and intentional.
+            </p>
+          </div>
 
-      <div class="project-grid">
-        <div class="project-card">
-          <h3>Shopping List App</h3>
-          <p>
-            Dynamic list management with DOM manipulation and event handling.
-          </p>
+          <div class="skills-card">
+            <h3>Technical Skills</h3>
+            <div class="skills">
+              <span>HTML5</span>
+              <span>CSS3</span>
+              <span>Flexbox</span>
+              <span>CSS Grid</span>
+              <span>JavaScript</span>
+              <span>Git</span>
+              <span>GitHub</span>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div class="project-card">
-          <h3>API Data Project</h3>
-          <p>Fetches external data and renders interactive UI components.</p>
+      <!-- PROJECTS -->
+      <section id="projects" class="section">
+        <h2>Projects</h2>
+
+        <div class="project-grid">
+          <div class="project-card">
+            <h3>Music Player UI</h3>
+            <p>Flexbox & Grid layout project.</p>
+            <a
+              href="https://github.com/The-Marcy-Lab-School-Assignments/swe-3-2-flexbox-grid-from-scratch-asiaidre30"
+              target="_blank"
+              >View Project</a
+            >
+          </div>
+
+          <div class="project-card">
+            <h3>Shopping List CLI</h3>
+            <p>JavaScript command-line application.</p>
+            <a
+              href="https://github.com/asiaidre30/shopping-list-cli"
+              target="_blank"
+              >View Project</a
+            >
+          </div>
         </div>
+      </section>
 
-        <div class="project-card">
-          <h3>Responsive Website</h3>
-          <p>Mobile-first layout with structured CSS design.</p>
+      <!-- MINI GAME -->
+      <section id="game" class="section">
+        <h2>Reaction Challenge</h2>
+        <p>Click the glowing orb as fast as you can!</p>
+        <div id="gameArea">
+          <div id="orb"></div>
         </div>
+        <p id="score">Score: 0</p>
+      </section>
 
-        <div class="project-card">
-          <h3>JavaScript Higher-Order Functions</h3>
-          <p>Custom implementations of map, filter, every, and forEach.</p>
+      <!-- CONTACT -->
+      <section id="contact" class="section">
+        <h2>Contact Me</h2>
+
+        <form action="https://formspree.io/f/xjgewzpe" method="POST">
+          <input type="text" name="name" placeholder="Your Name" required />
+          <input type="email" name="email" placeholder="Your Email" required />
+          <textarea
+            name="message"
+            placeholder="Your Message"
+            required
+          ></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+
+        <div class="socials">
+          <a href="https://github.com/asiaidre30" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" />
+          </a>
+
+          <a href="https://www.linkedin.com/in/asia-idrees" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" />
+          </a>
+
+          <a href="mailto:asiaidrees283@gmail.com">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" />
+          </a>
         </div>
-      </div>
-    </section>
-
-    <section id="skills">
-      <h2>Skills</h2>
-      <ul class="skills">
-        <li>JavaScript</li>
-        <li>HTML</li>
-        <li>CSS</li>
-        <li>APIs</li>
-        <li>Git</li>
-        <li>Responsive Design</li>
-      </ul>
-    </section>
-
-    <section id="game">
-      <h2>JavaScript Quiz Challenge</h2>
-      <div class="quiz-box">
-        <p id="question"></p>
-        <div id="answers"></div>
-        <p>Score: <span id="score">0</span></p>
-        <button id="nextQuestion">Next Question</button>
-      </div>
-    </section>
-
-    <footer class="footer">© 2026 Asia — Built with creativity & logic</footer>
+      </section>
+    </main>
 
     <script src="main.js"></script>
   </body>

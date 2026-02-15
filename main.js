@@ -1,79 +1,60 @@
-// Dark Mode
-const toggle = document.getElementById("themeToggle");
-
+// DARK MODE
+const toggle = document.getElementById("modeToggle");
 toggle.addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
-  toggle.textContent = document.body.classList.contains("light-mode")
-    ? "☀️"
-    : "🌙";
 });
 
-// Scroll Reveal
-const sections = document.querySelectorAll("section");
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("visible");
-    }
-  });
-});
-sections.forEach((section) => observer.observe(section));
+// MINI GAME
+const orb = document.getElementById("orb");
+const gameArea = document.getElementById("gameArea");
+const scoreText = document.getElementById("score");
 
-// Smooth Scroll
-document.getElementById("exploreBtn").addEventListener("click", () => {
-  document.getElementById("projects").scrollIntoView({ behavior: "smooth" });
-});
-
-// QUIZ GAME
-const questions = [
-  {
-    question: "Which array method returns a new array?",
-    answers: ["forEach", "map", "push"],
-    correct: 1,
-  },
-  {
-    question: "Which method filters items based on condition?",
-    answers: ["filter", "reduce", "every"],
-    correct: 0,
-  },
-  {
-    question: "Which method checks if all elements pass a test?",
-    answers: ["map", "every", "sort"],
-    correct: 1,
-  },
-];
-
-let currentQuestion = 0;
 let score = 0;
 
-const questionEl = document.getElementById("question");
-const answersEl = document.getElementById("answers");
-const scoreEl = document.getElementById("score");
-const nextBtn = document.getElementById("nextQuestion");
+function moveOrb() {
+  const x = Math.random() * 260;
+  const y = Math.random() * 260;
+  orb.style.left = x + "px";
+  orb.style.top = y + "px";
+}
 
-function loadQuestion() {
-  const q = questions[currentQuestion];
-  questionEl.textContent = q.question;
-  answersEl.innerHTML = "";
+orb.addEventListener("click", () => {
+  score++;
+  scoreText.textContent = "Score: " + score;
+  moveOrb();
+});
 
-  q.answers.forEach((answer, index) => {
-    const btn = document.createElement("button");
-    btn.textContent = answer;
-    btn.onclick = () => checkAnswer(index);
-    answersEl.appendChild(btn);
+moveOrb();
+
+// GALAXY
+const canvas = document.getElementById("galaxy");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+
+for (let i = 0; i < 200; i++) {
+  stars.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 2,
+    speed: Math.random() * 0.5,
   });
 }
 
-function checkAnswer(index) {
-  if (index === questions[currentQuestion].correct) {
-    score++;
-    scoreEl.textContent = score;
-  }
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#5f9cff";
+  stars.forEach((star) => {
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+    ctx.fill();
+    star.y += star.speed;
+    if (star.y > canvas.height) star.y = 0;
+  });
+  requestAnimationFrame(drawStars);
 }
 
-nextBtn.addEventListener("click", () => {
-  currentQuestion = (currentQuestion + 1) % questions.length;
-  loadQuestion();
-});
-
-loadQuestion();
+drawStars();
