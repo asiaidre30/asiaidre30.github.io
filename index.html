@@ -3,137 +3,92 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Asia | Frontend Developer</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Asia | Developer Portfolio</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
-
   <body>
-    <!-- HEADER -->
     <header class="site-header">
       <nav class="nav">
-        <h1 class="logo">Asia</h1>
+        <div class="logo">Asia.dev</div>
+
         <ul class="nav-links">
           <li><a href="#about">About</a></li>
           <li><a href="#projects">Projects</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#game">Game</a></li>
         </ul>
+
+        <button id="themeToggle">🌙</button>
       </nav>
     </header>
 
-    <main>
-      <!-- HERO -->
-      <section class="hero">
-        <h2 class="gradient-text">Hi, I’m Asia 👋</h2>
-        <p>
-          Frontend developer in training focused on building clean, responsive,
-          and user-friendly websites using HTML and CSS.
-        </p>
-      </section>
+    <section class="hero">
+      <h1>Hello, I’m <span class="gradient-text">Asia</span></h1>
+      <p>IT Support Technician • JavaScript Developer • Problem Solver</p>
+      <button id="exploreBtn">Explore My Work ↓</button>
+    </section>
 
-      <!-- ABOUT -->
-      <section id="about" class="about">
-        <h2>About Me</h2>
-        <p>
-          I’m passionate about frontend development because it allows me to
-          combine creativity with problem-solving. I enjoy working with layout,
-          spacing, and visual hierarchy to create smooth user experiences.
-        </p>
+    <section id="about">
+      <h2>About Me</h2>
+      <p>
+        I build interactive, structured web applications using JavaScript. I
+        enjoy turning logic into smooth user experiences and solving real
+        problems.
+      </p>
+    </section>
 
-        <h3>Technical Skills</h3>
-        <ul class="skills">
-          <li>HTML5</li>
-          <li>CSS3</li>
-          <li>Flexbox</li>
-          <li>CSS Grid</li>
-          <li>Git & GitHub</li>
-        </ul>
-      </section>
+    <section id="projects">
+      <h2>Projects</h2>
 
-      <!-- PROJECTS -->
-      <section id="projects" class="projects">
-        <h2>Projects</h2>
-
-        <div class="project-grid">
-          <article class="project-card">
-            <h3>Personal Portfolio</h3>
-            <p>A responsive portfolio focused on layout and accessibility.</p>
-            <p class="tech">HTML, CSS</p>
-            <a href="#">View Project</a>
-          </article>
-
-          <article class="project-card">
-            <h3>Music Player UI</h3>
-            <p>Interface design exploring spacing and hover interactions.</p>
-            <p class="tech">HTML, CSS</p>
-            <a
-              href="https://github.com/The-Marcy-Lab-School-Assignments/swe-3-2-flexbox-grid-from-scratch-asiaidre30"
-              target="_blank"
-              rel="noopener noreferrer"
-              >View Project</a
-            >
-          </article>
-
-          <article class="project-card">
-            <h3>CLI Shopping Cart</h3>
-            <p>A JavaScript command-line application.</p>
-            <p class="tech">JavaScript</p>
-            <a
-              href="https://github.com/asiaidre30/shopping-list-cli"
-              target="_blank"
-              rel="noopener noreferrer"
-              >View Project</a
-            >
-          </article>
+      <div class="project-grid">
+        <div class="project-card">
+          <h3>Shopping List App</h3>
+          <p>
+            Dynamic list management with DOM manipulation and event handling.
+          </p>
         </div>
-      </section>
 
-      <!-- CONTACT -->
-      <section id="contact" class="contact">
-        <h2>Contact Me</h2>
-
-        <p>Let’s connect!</p>
-
-        <div class="socials">
-          <div class="social-item">
-            <img
-              src="https://s.yimg.com/zb/imgv1/871a3f0a-7579-32b5-8878-6fe393451fb8/t_500x300"
-              alt="LinkedIn logo"
-            />
-            <a href="https://www.linkedin.com/in/asia-idrees" target="_blank">
-              LinkedIn
-            </a>
-          </div>
-
-          <div class="social-item">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
-              alt="GitHub logo"
-            />
-            <a href="https://github.com/asiaidre30" target="_blank"> GitHub </a>
-          </div>
-
-          <div class="social-item">
-            <img
-              src="https://static.vecteezy.com/system/resources/previews/012/871/452/non_2x/gmail-icon-google-product-illustration-free-png.png"
-              alt="Email icon"
-            />
-            <a href="mailto:asiaidrees283@gmail.com"> Email </a>
-          </div>
+        <div class="project-card">
+          <h3>API Data Project</h3>
+          <p>Fetches external data and renders interactive UI components.</p>
         </div>
-        <!-- Form -->
-        <form>
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" required />
 
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required />
+        <div class="project-card">
+          <h3>Responsive Website</h3>
+          <p>Mobile-first layout with structured CSS design.</p>
+        </div>
 
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="4" required></textarea>
+        <div class="project-card">
+          <h3>JavaScript Higher-Order Functions</h3>
+          <p>Custom implementations of map, filter, every, and forEach.</p>
+        </div>
+      </div>
+    </section>
 
-          <button type="submit">Send Message</button>
-        </form>
-      </section>
-    </main>
+    <section id="skills">
+      <h2>Skills</h2>
+      <ul class="skills">
+        <li>JavaScript</li>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>APIs</li>
+        <li>Git</li>
+        <li>Responsive Design</li>
+      </ul>
+    </section>
+
+    <section id="game">
+      <h2>JavaScript Quiz Challenge</h2>
+      <div class="quiz-box">
+        <p id="question"></p>
+        <div id="answers"></div>
+        <p>Score: <span id="score">0</span></p>
+        <button id="nextQuestion">Next Question</button>
+      </div>
+    </section>
+
+    <footer class="footer">© 2026 Asia — Built with creativity & logic</footer>
+
+    <script src="main.js"></script>
   </body>
 </html>
