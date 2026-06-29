@@ -1,134 +1,506 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Asia.dev | Frontend Developer</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asia Idrees | Software Engineer</title>
 
-  <body>
-    <!-- GALAXY BACKGROUND -->
-    <canvas id="galaxy"></canvas>
+  <!-- Google Fonts: Orbitron for headings (sci-fi feel), Inter for body -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
 
-    <!-- HEADER -->
-    <header class="site-header">
-      <nav class="nav">
-        <h1 class="logo">Asia!!!</h1>
-        <ul class="nav-links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#game">Game</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-        <button id="modeToggle">🌙</button>
-      </nav>
-    </header>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-    <main>
-      <!-- HERO -->
-      <section class="hero">
-        <h2 class="gradient-text">Hi, I’m Asia</h2>
-        <p></p>
-      </section>
+  <!-- ===================== STAR CANVAS =====================
+       A <canvas> element that fills the entire page background.
+       JavaScript will draw and animate stars on this canvas. -->
+  <canvas id="starfield"></canvas>
 
-      <!-- ABOUT -->
-      <section id="about" class="section about-section">
-        <h2>About Me</h2>
+  <!-- ===================== NAVBAR ===================== -->
+  <nav id="navbar">
+    <div class="nav-logo">✦ Asia Idrees</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#beyond">My World</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#game">Mini Game</a></li>
+      <li><a href="#memes">Meme Gen</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <!-- Hamburger icon for mobile nav toggle -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
+  </nav>
 
-        <div class="about-container">
-          <div class="about-card">
-            <p>
-              I’m a frontend developer in training based in Brooklyn, New York.
-              I love building immersive, responsive websites that blend
-              creativity and structure. I enjoy turning ideas into clean,
-              interactive user experiences that feel smooth and intentional.
-            </p>
+  <!-- ===================== HERO SECTION =====================
+       First thing visitors see — name, title, and a call-to-action. -->
+  <section id="hero">
+    <!-- Floating nebula blobs for a galaxy depth effect -->
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div class="nebula nebula-3"></div>
+
+    <!-- Floating planet decoration (desktop only) -->
+    <div class="planet-container" aria-hidden="true">
+      <div class="planet">
+        <div class="planet-ring"></div>
+        <div class="planet-ring planet-ring-2"></div>
+        <div class="planet-crater crater-1"></div>
+        <div class="planet-crater crater-2"></div>
+        <div class="planet-crater crater-3"></div>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <!-- Animated greeting tag -->
+      <p class="hero-tag">✦ Welcome to my universe ✦</p>
+
+      <!-- Name with a gradient glow effect -->
+      <h1 class="hero-name">Asia<br/><span>Idrees</span></h1>
+
+      <p class="hero-title">Brooklyn &nbsp;·&nbsp; Pakistan &nbsp;·&nbsp; Software Engineer</p>
+
+      <p class="hero-sub">
+        A Brooklyn-raised, Pakistan-proud builder of things that matter —
+        making technology more human, one line of code at a time.
+      </p>
+
+      <!-- CTA buttons -->
+      <div class="hero-buttons">
+        <a href="#projects" class="btn btn-primary">See My Work 🚀</a>
+        <a href="#contact" class="btn btn-outline">Get In Touch ✦</a>
+      </div>
+
+      <!-- Scroll hint arrow -->
+      <div class="scroll-hint">↓ scroll to explore</div>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT SECTION ===================== -->
+  <section id="about">
+    <div class="section-wrapper">
+      <h2 class="section-title">About <span>Me</span></h2>
+
+      <div class="about-grid">
+        <!-- Left: avatar / identity card -->
+        <div class="about-card">
+          <!-- Emoji avatar with ring glow -->
+          <div class="avatar">👩🏽‍💻</div>
+          <h3>Asia Idrees</h3>
+          <p class="about-role">Software Engineer in the Making</p>
+
+          <!-- Fun facts list -->
+          <ul class="about-facts">
+            <li>🗽 Born &amp; raised in Brooklyn, NY</li>
+            <li>🇵🇰 Family roots in Pakistan</li>
+            <li>🌙 Muslim woman breaking into tech</li>
+            <li>🎓 Marcy Lab School Fellow</li>
+            <li>💻 PERN Stack Developer</li>
+            <li>🎨 Art, fashion &amp; creative soul</li>
+            <li>📖 Poetry &amp; writing enthusiast</li>
+          </ul>
+        </div>
+
+        <!-- Right: bio paragraphs -->
+        <div class="about-text">
+          <p>
+            Hi, I'm <strong>Asia Idrees</strong> — born and raised in <strong>Brooklyn, NY</strong>,
+            with roots in Pakistan. I'm an aspiring software engineer and Marcy Lab School Fellow
+            on a mission: to prove that women who look like me belong in tech.
+          </p>
+          <p>
+            As a <strong>Pakistani Muslim woman</strong> in this industry, I'm not just building apps —
+            I'm helping change who gets to build the future. Great technology should reflect the full
+            range of human experience, and I carry that conviction into everything I create.
+            Tech isn't just about code — it's about <em>people</em>.
+          </p>
+          <p>
+            Outside the IDE, I find inspiration in <strong>art, fashion, and poetry</strong> — creative
+            worlds that shape how I think about design, storytelling, and empathy. That blend of
+            technical rigor and creative heart is what makes my work uniquely mine.
+          </p>
+
+          <!-- Personality chips / tags -->
+          <div class="personality-tags">
+            <span>🗽 Brooklyn Made</span>
+            <span>🇵🇰 Pakistan Proud</span>
+            <span>🧠 Problem Solver</span>
+            <span>🎨 Creative Thinker</span>
+            <span>📝 Poet at Heart</span>
+            <span>👗 Fashion Forward</span>
+            <span>🌱 Lifelong Learner</span>
+            <span>🚀 Dream Big</span>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <div class="skills-card">
-            <h3>Technical Skills</h3>
-            <div class="skills">
-              <span>HTML5</span>
-              <span>CSS3</span>
-              <span>Flexbox</span>
-              <span>CSS Grid</span>
-              <span>JavaScript</span>
-              <span>Git</span>
-              <span>GitHub</span>
+  <!-- ===================== SKILLS SECTION ===================== -->
+  <section id="skills">
+    <div class="section-wrapper">
+      <h2 class="section-title">My <span>Skills</span></h2>
+      <p class="section-sub">The tools and technologies I use to bring ideas to life</p>
+
+      <!-- Skills displayed as glowing cards in a grid -->
+      <div class="skills-grid">
+        <div class="skill-card"><span class="skill-icon">⚛️</span><p>React</p></div>
+        <div class="skill-card"><span class="skill-icon">🟨</span><p>JavaScript</p></div>
+        <div class="skill-card"><span class="skill-icon">🐍</span><p>Python</p></div>
+        <div class="skill-card"><span class="skill-icon">🟢</span><p>Node.js</p></div>
+        <div class="skill-card"><span class="skill-icon">🚂</span><p>Express</p></div>
+        <div class="skill-card"><span class="skill-icon">🐘</span><p>PostgreSQL</p></div>
+        <div class="skill-card"><span class="skill-icon">⚡</span><p>Vite</p></div>
+        <div class="skill-card"><span class="skill-icon">🎨</span><p>HTML & CSS</p></div>
+        <div class="skill-card"><span class="skill-icon">🐙</span><p>Git & GitHub</p></div>
+        <div class="skill-card"><span class="skill-icon">🖥️</span><p>CLI Tools</p></div>
+        <div class="skill-card"><span class="skill-icon">📱</span><p>Responsive Design</p></div>
+        <div class="skill-card"><span class="skill-icon">🔐</span><p>Auth & Sessions</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BEYOND THE CODE SECTION ===================== -->
+  <section id="beyond">
+    <div class="section-wrapper">
+      <h2 class="section-title">Beyond the <span>Code</span></h2>
+      <p class="section-sub">The other dimensions of who I am — where creativity meets curiosity</p>
+
+      <div class="beyond-grid">
+
+        <!-- Art & Fashion -->
+        <div class="beyond-card">
+          <div class="beyond-icon">🎨</div>
+          <h3>Art &amp; Fashion</h3>
+          <p>
+            I've always had a creative eye. Whether it's crafting an outfit, sketching UI concepts,
+            or curating an aesthetic, I see the world through color, shape, and intention.
+            Fashion is self-expression — a wearable art form that tells your story before you
+            say a word.
+          </p>
+          <div class="beyond-tags">
+            <span>✦ Visual Design</span>
+            <span>✦ Aesthetic Curation</span>
+            <span>✦ Self-Expression</span>
+          </div>
+        </div>
+
+        <!-- Reading & Writing -->
+        <div class="beyond-card">
+          <div class="beyond-icon">📖</div>
+          <h3>Poetry &amp; Writing</h3>
+          <p>
+            Words are my second language. I write poetry to process the world — the complicated,
+            the beautiful, and the in-between. Reading grounds me; writing frees me. Storytelling
+            shapes how I build: with empathy, intention, and a sense of narrative.
+          </p>
+          <div class="beyond-tags">
+            <span>✦ Poetry</span>
+            <span>✦ Journaling</span>
+            <span>✦ Storytelling</span>
+          </div>
+        </div>
+
+        <!-- Currently Mastering -->
+        <div class="beyond-card beyond-learning">
+          <div class="beyond-icon">🚀</div>
+          <h3>Currently Mastering</h3>
+          <p>Always learning, always leveling up. Here's what I'm actively building skills in:</p>
+          <div class="learning-items">
+            <div class="learning-item">
+              <div class="learning-header">
+                <span class="learning-name">JavaScript &amp; CSS</span>
+                <span class="learning-pct">80%</span>
+              </div>
+              <div class="learning-bar"><div class="learning-fill" style="--pct:80%"></div></div>
+            </div>
+            <div class="learning-item">
+              <div class="learning-header">
+                <span class="learning-name">Full PERN Stack</span>
+                <span class="learning-pct">72%</span>
+              </div>
+              <div class="learning-bar"><div class="learning-fill" style="--pct:72%"></div></div>
+            </div>
+            <div class="learning-item">
+              <div class="learning-header">
+                <span class="learning-name">Express &amp; Node.js</span>
+                <span class="learning-pct">68%</span>
+              </div>
+              <div class="learning-bar"><div class="learning-fill" style="--pct:68%"></div></div>
+            </div>
+            <div class="learning-item">
+              <div class="learning-header">
+                <span class="learning-name">Python</span>
+                <span class="learning-pct">40%</span>
+              </div>
+              <div class="learning-bar"><div class="learning-fill" style="--pct:40%"></div></div>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- PROJECTS -->
-      <section id="projects" class="section">
-        <h2>Projects</h2>
+      </div>
+    </div>
+  </section>
 
-        <div class="project-grid">
-          <div class="project-card">
-            <h3>Music Player UI</h3>
-            <p>Flexbox & Grid layout project.</p>
-            <a
-              href="https://github.com/The-Marcy-Lab-School-Assignments/swe-3-2-flexbox-grid-from-scratch-asiaidre30"
-              target="_blank"
-              >View Project</a
-            >
+  <!-- ===================== PROJECTS SECTION ===================== -->
+  <section id="projects">
+    <div class="section-wrapper">
+      <h2 class="section-title">My <span>Projects</span></h2>
+      <p class="section-sub">Real things I've built — from idea to deployed product</p>
+
+      <div class="projects-grid">
+
+        <!-- PROJECT 1: PediaMap -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-emoji">🏥</span>
+            <div class="project-badges">
+              <span class="badge">JavaScript</span>
+              <span class="badge">CSS</span>
+              <span class="badge">REST API</span>
+            </div>
           </div>
-
-          <div class="project-card">
-            <h3>Shopping List CLI</h3>
-            <p>JavaScript command-line application.</p>
-            <a
-              href="https://github.com/asiaidre30/shopping-list-cli"
-              target="_blank"
-              >View Project</a
-            >
+          <h3>PediaMap</h3>
+          <p class="project-desc">
+            An interactive web app that helps parents and caregivers find pediatric healthcare
+            providers across the U.S. Search by city, view provider details, and save favorites —
+            built with a clean, child-friendly UI and the NPI Registry API.
+          </p>
+          <ul class="project-features">
+            <li>✦ Search pediatric providers by city</li>
+            <li>✦ View detailed provider info & credentials</li>
+            <li>✦ Save favorites to localStorage</li>
+            <li>✦ Mobile-first responsive design</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/asia-noboni-mls/mod-4-project" target="_blank" class="btn btn-small">GitHub ↗</a>
           </div>
         </div>
-      </section>
 
-      <!-- MINI GAME -->
-      <section id="game" class="section">
-        <h2>Reaction Challenge</h2>
-        <p>Click the glowing orb as fast as you can!</p>
-        <div id="gameArea">
-          <div id="orb"></div>
+        <!-- PROJECT 2: Shopping List CLI -->
+        <div class="project-card">
+          <div class="project-header">
+            <span class="project-emoji">🛒</span>
+            <div class="project-badges">
+              <span class="badge">Node.js</span>
+              <span class="badge">JavaScript</span>
+              <span class="badge">CLI</span>
+            </div>
+          </div>
+          <h3>Shopping List CLI</h3>
+          <p class="project-desc">
+            An interactive command-line shopping list manager built with Node.js. Add items with
+            name, quantity, and price — remove them, view totals, and manage your list entirely
+            from the terminal. Demonstrates clean code organization and input validation.
+          </p>
+          <ul class="project-features">
+            <li>✦ Add items with quantity & price</li>
+            <li>✦ Remove items by name</li>
+            <li>✦ View list with running total price</li>
+            <li>✦ Input validation & error handling</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/asiaidre30/shopping-list-cli" target="_blank" class="btn btn-small">GitHub ↗</a>
+          </div>
         </div>
-        <p id="score">Score: 0</p>
-      </section>
 
-      <!-- CONTACT -->
-      <section id="contact" class="section">
-        <h2>Contact Me</h2>
+        <!-- PROJECT 3: ApplyFlow -->
+        <div class="project-card featured">
+          <div class="featured-label">✦ Featured</div>
+          <div class="project-header">
+            <span class="project-emoji">📋</span>
+            <div class="project-badges">
+              <span class="badge">React</span>
+              <span class="badge">Express</span>
+              <span class="badge">PostgreSQL</span>
+              <span class="badge">Node.js</span>
+            </div>
+          </div>
+          <h3>ApplyFlow</h3>
+          <p class="project-desc">
+            A full-stack PERN job application tracker with auth. Create an account, log in, and
+            track every job you apply to — company, role, status, date, and notes. Stay organized
+            during your job search with a clean dashboard.
+          </p>
+          <ul class="project-features">
+            <li>✦ User registration & login with sessions</li>
+            <li>✦ Create, view & delete job applications</li>
+            <li>✦ Track status & add personal notes</li>
+            <li>✦ Full REST API with auth middleware</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/The-Marcy-Lab-School-Assignments/full-stack-project-remix-asiaidre30" target="_blank" class="btn btn-small">GitHub ↗</a>
+          </div>
+        </div>
 
-        <form action="https://formspree.io/f/xjgewzpe" method="POST">
-          <input type="text" name="name" placeholder="Your Name" required />
-          <input type="email" name="email" placeholder="Your Email" required />
-          <textarea
-            name="message"
-            placeholder="Your Message"
-            required
-          ></textarea>
-          <button type="submit">Send Message</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MINI GAME SECTION =====================
+       A canvas-based asteroid dodger game. The JS in script.js drives it. -->
+  <section id="game">
+    <div class="section-wrapper">
+      <h2 class="section-title">Mini <span>Game</span> 🕹️</h2>
+      <p class="section-sub">Take a break — dodge the asteroids with arrow keys or WASD!</p>
+
+      <div class="game-container">
+        <!-- Game canvas — where the game is drawn -->
+        <canvas id="gameCanvas" width="700" height="400"></canvas>
+
+        <!-- Game controls displayed below canvas -->
+        <div class="game-controls">
+          <button id="startBtn" class="btn btn-primary">▶ Start Game</button>
+          <button id="restartBtn" class="btn btn-outline" style="display:none;">↺ Restart</button>
+          <div class="game-score">Score: <span id="scoreDisplay">0</span></div>
+          <div class="game-hi-score">Best: <span id="hiScoreDisplay">0</span></div>
+        </div>
+
+        <!-- Key hint for desktop and mobile -->
+        <p class="game-hint">⌨️ Arrow keys / WASD to move &nbsp;|&nbsp; 📱 Tap the canvas to dodge</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MEME GENERATOR SECTION =====================
+       Users pick a meme template and type top/bottom text.
+       A canvas renders the final meme which they can download. -->
+  <section id="memes">
+    <div class="section-wrapper">
+      <h2 class="section-title">Meme <span>Generator</span> 😂</h2>
+      <p class="section-sub">Because every great portfolio needs a meme generator. You're welcome.</p>
+
+      <div class="meme-container">
+        <!-- Left: controls panel -->
+        <div class="meme-controls">
+
+          <!-- Template picker — clicking sets the meme image -->
+          <label class="meme-label">Pick a Template</label>
+          <div class="meme-templates" id="memeTemplates">
+            <!-- Templates are injected by JavaScript -->
+          </div>
+
+          <!-- Text inputs -->
+          <label class="meme-label">Top Text</label>
+          <input type="text" id="topText" class="meme-input" placeholder="Top caption..." maxlength="60" />
+
+          <label class="meme-label">Bottom Text</label>
+          <input type="text" id="bottomText" class="meme-input" placeholder="Bottom caption..." maxlength="60" />
+
+          <!-- Font size slider -->
+          <label class="meme-label">Font Size: <span id="fontSizeVal">36</span>px</label>
+          <input type="range" id="fontSize" min="20" max="60" value="36" class="meme-slider" />
+
+          <!-- Action buttons -->
+          <button id="generateMeme" class="btn btn-primary" style="width:100%; margin-top:10px;">Generate Meme ✨</button>
+          <button id="downloadMeme" class="btn btn-outline" style="width:100%; margin-top:8px; display:none;">Download 💾</button>
+        </div>
+
+        <!-- Right: meme preview canvas -->
+        <div class="meme-preview">
+          <canvas id="memeCanvas" width="500" height="500"></canvas>
+          <p class="meme-hint">← Pick a template and add your text!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT SECTION ===================== -->
+  <section id="contact">
+    <div class="section-wrapper">
+      <h2 class="section-title">Let's <span>Connect</span> ✦</h2>
+      <p class="section-sub">I'm open to opportunities, collabs, and good conversations!</p>
+
+      <!-- Social / profile link cards -->
+      <div class="contact-grid">
+        <a href="https://github.com/asiaidre30" target="_blank" class="contact-card">
+          <span class="contact-icon">🐙</span>
+          <h4>GitHub</h4>
+          <p>@asiaidre30</p>
+        </a>
+        <a href="mailto:asiaidrees283@gmail.com" class="contact-card">
+          <span class="contact-icon">📧</span>
+          <h4>Email</h4>
+          <p>asiaidrees283@gmail.com</p>
+        </a>
+        <a href="https://www.linkedin.com/in/asia-idrees/" target="_blank" class="contact-card">
+          <span class="contact-icon">💼</span>
+          <h4>LinkedIn</h4>
+          <p>Asia Idrees</p>
+        </a>
+      </div>
+
+      <!-- ---- Contact Form ----
+           Powered by Formspree — submissions are forwarded to asiaidrees283@gmail.com.
+           ACTION STEP: go to https://formspree.io, sign up, create a new form,
+           then replace YOUR_FORM_ID in the action URL below with your real form ID. -->
+      <!-- Galaxy HUD contact form -->
+      <div class="contact-form-wrapper">
+
+        <!-- Top decorative bar -->
+        <div class="form-hud-bar">
+          <span class="hud-dot"></span>
+          <span class="hud-dot"></span>
+          <span class="hud-dot"></span>
+          <span class="hud-label">✦ TRANSMISSION OPEN ✦</span>
+          <span class="hud-dot"></span>
+          <span class="hud-dot"></span>
+          <span class="hud-dot"></span>
+        </div>
+
+        <h3 class="form-heading">Send Me a Message ✉️</h3>
+        <p class="form-sub">Drop a message into the galaxy — I'll find it and write back!</p>
+
+        <form
+          id="contactForm"
+          action="https://formspree.io/f/xjgewzpe"
+          method="POST"
+          class="contact-form"
+          novalidate
+        >
+          <div class="form-row">
+            <div class="form-group">
+              <label for="senderName">✦ Your Name</label>
+              <input type="text" id="senderName" name="name" placeholder="e.g. Jane Doe" required class="form-input" />
+            </div>
+            <div class="form-group">
+              <label for="senderEmail">✦ Your Email</label>
+              <input type="email" id="senderEmail" name="email" placeholder="you@example.com" required class="form-input" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subject">✦ Subject</label>
+            <input type="text" id="subject" name="subject" placeholder="What's this about?" class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label for="message">✦ Message</label>
+            <textarea id="message" name="message" rows="6" placeholder="Hey Asia, I wanted to reach out about..." required class="form-input form-textarea"></textarea>
+          </div>
+
+          <button type="submit" class="btn form-submit" id="formSubmitBtn">
+            Send Message 🚀
+          </button>
+
+          <p id="formStatus" class="form-status" aria-live="polite"></p>
         </form>
+      </div>
 
-        <div class="socials">
-          <a href="https://github.com/asiaidre30" target="_blank">
-            <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" />
-          </a>
+      <!-- Closing quote -->
+      <p class="contact-quote">
+        "Great technology isn't just about code — it's about <em>people</em>." ✦
+      </p>
+    </div>
+  </section>
 
-          <a href="https://www.linkedin.com/in/asia-idrees" target="_blank">
-            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" />
-          </a>
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <p>Made with 💜 by Asia Idrees &nbsp;·&nbsp; Somewhere in the galaxy &nbsp;✦</p>
+  </footer>
 
-          <a href="mailto:asiaidrees283@gmail.com">
-            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" />
-          </a>
-        </div>
-      </section>
-    </main>
-
-    <script src="main.js"></script>
-  </body>
+  <!-- Main JavaScript file — handles stars, game, meme generator, nav -->
+  <script src="script.js"></script>
+</body>
 </html>

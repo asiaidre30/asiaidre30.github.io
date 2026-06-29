@@ -1,0 +1,922 @@
+/* ============================================================
+   ASIA IDREES PORTFOLIO — script.js
+   Contains:
+     1. Starfield background animation
+     2. Navbar scroll effect + hamburger menu
+     3. Scroll reveal animations
+     4. Mini Game (Asteroid Dodger)
+     5. Meme Generator
+   ============================================================ */
+
+
+/* ============================================================
+   1. STARFIELD — animated star background on <canvas id="starfield">
+      Stars are randomly placed and twinkle by changing their opacity.
+   ============================================================ */
+(function initStarfield() {
+  const canvas = document.getElementById('starfield');
+  const ctx    = canvas.getContext('2d');
+
+  /* Resize canvas to always fill the full window */
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  /* Warp speed intro — counts down from 100 frames on first load */
+  let warpFrame = 100;
+
+  /* Star colours — mix of white, purple, cyan, and gold for a rich galaxy look */
+  const STAR_COLORS = [
+    '255,255,255',   /* white       */
+    '255,255,255',   /* white (more common) */
+    '255,255,255',
+    '200,180,255',   /* soft purple */
+    '180,230,255',   /* ice blue    */
+    '255,220,120',   /* warm gold   */
+    '120,255,220',   /* cyan        */
+  ];
+
+  /* Generate stars — mix of tiny background stars and a few large bright ones */
+  const STAR_COUNT = 380;
+  const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
+    const isBig = i < 18; /* first 18 are large bright hero stars */
+    return {
+      x:       Math.random() * window.innerWidth,
+      y:       Math.random() * window.innerHeight,
+      radius:  isBig ? 2.2 + Math.random() * 2.5 : Math.random() * 1.6 + 0.2,
+      opacity: Math.random(),
+      speed:   isBig ? Math.random() * 0.012 + 0.004 : Math.random() * 0.006 + 0.001,
+      dir:     Math.random() > 0.5 ? 1 : -1,
+      color:   STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)],
+      glow:    isBig, /* big stars get a glow halo */
+    };
+  });
+
+  /* Shooting stars — streak across the canvas occasionally */
+  const shootingStars = [];
+  let shootTimer = 0;
+
+  /* Color sets for shooting stars: tail → head */
+  const SHOOT_COLORS = [
+    { tail: '220,200,255', head: '255,255,255' }, /* white-purple */
+    { tail: '236,72,153',  head: '255,180,220' }, /* hot pink     */
+    { tail: '34,211,238',  head: '160,240,255' }, /* electric cyan */
+    { tail: '147,51,234',  head: '192,132,252' }, /* deep purple  */
+    { tail: '251,191,36',  head: '255,235,160' }, /* gold         */
+  ];
+
+  function spawnShootingStar() {
+    const cs = SHOOT_COLORS[Math.floor(Math.random() * SHOOT_COLORS.length)];
+    shootingStars.push({
+      x:         Math.random() * canvas.width * 0.7,
+      y:         Math.random() * canvas.height * 0.4,
+      len:       90 + Math.random() * 140,
+      speed:     12 + Math.random() * 10,
+      angle:     Math.PI / 5 + (Math.random() - 0.5) * 0.3,
+      life:      1.0,
+      decay:     0.016 + Math.random() * 0.01,
+      tailColor: cs.tail,
+      headColor: cs.head,
+    });
+  }
+
+  /* Draw and animate every frame */
+  function drawStars() {
+    /* Deep space gradient background */
+    const grad = ctx.createRadialGradient(
+      canvas.width * 0.4, canvas.height * 0.3, 0,
+      canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.9
+    );
+    grad.addColorStop(0,   '#120030');
+    grad.addColorStop(0.4, '#08001a');
+    grad.addColorStop(1,   '#02000a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    /* Soft nebula clouds painted directly on the background */
+    [
+      { x: 0.15, y: 0.2,  r: 320, col: '100,20,180',  a: 0.07 },
+      { x: 0.8,  y: 0.6,  r: 280, col: '200,30,120',  a: 0.06 },
+      { x: 0.5,  y: 0.85, r: 250, col: '20,150,180',  a: 0.05 },
+      { x: 0.9,  y: 0.1,  r: 200, col: '80,0,200',    a: 0.05 },
+    ].forEach(n => {
+      const ng = ctx.createRadialGradient(
+        n.x * canvas.width, n.y * canvas.height, 0,
+        n.x * canvas.width, n.y * canvas.height, n.r
+      );
+      ng.addColorStop(0,   `rgba(${n.col},${n.a})`);
+      ng.addColorStop(1,   `rgba(${n.col},0)`);
+      ctx.fillStyle = ng;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    });
+
+    /* Draw regular stars */
+    stars.forEach(star => {
+      star.opacity += star.speed * star.dir;
+      if (star.opacity >= 1 || star.opacity <= 0) star.dir *= -1;
+
+      ctx.save();
+      if (star.glow) {
+        /* Soft glow halo around big stars */
+        const halo = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.radius * 4);
+        halo.addColorStop(0,   `rgba(${star.color},${star.opacity * 0.6})`);
+        halo.addColorStop(1,   `rgba(${star.color},0)`);
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius * 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${star.color},${star.opacity})`;
+      ctx.fill();
+      ctx.restore();
+    });
+
+    /* Constellation lines — faint connections between nearby big stars */
+    const bigStars = stars.slice(0, 18);
+    ctx.save();
+    bigStars.forEach((a, i) => {
+      bigStars.slice(i + 1).forEach(b => {
+        const dx   = a.x - b.x;
+        const dy   = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200) {
+          const alpha = (1 - dist / 200) * 0.12 * ((a.opacity + b.opacity) / 2);
+          ctx.strokeStyle = `rgba(192,132,252,${alpha})`;
+          ctx.lineWidth   = 0.4;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      });
+    });
+    ctx.restore();
+
+    /* Spawn a shooting star — roughly every 1.5s on average */
+    shootTimer++;
+    if (shootTimer > 90 && Math.random() < 0.025) {
+      spawnShootingStar();
+      shootTimer = 0;
+    }
+
+    /* Draw and age shooting stars */
+    for (let i = shootingStars.length - 1; i >= 0; i--) {
+      const s = shootingStars[i];
+      const tx = s.x + Math.cos(s.angle) * s.len;
+      const ty = s.y + Math.sin(s.angle) * s.len;
+
+      const sg = ctx.createLinearGradient(s.x, s.y, tx, ty);
+      sg.addColorStop(0,   `rgba(${s.tailColor},0)`);
+      sg.addColorStop(0.55, `rgba(${s.headColor},${s.life * 0.85})`);
+      sg.addColorStop(1,   `rgba(${s.headColor},${s.life})`);
+
+      ctx.save();
+      ctx.strokeStyle = sg;
+      ctx.lineWidth   = 1.5 + s.life * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(tx,  ty);
+      ctx.stroke();
+      ctx.restore();
+
+      /* Move and fade */
+      s.x    += Math.cos(s.angle) * s.speed;
+      s.y    += Math.sin(s.angle) * s.speed;
+      s.life -= s.decay;
+      if (s.life <= 0) shootingStars.splice(i, 1);
+    }
+
+    /* Warp speed intro — radial speed lines for the first ~100 frames */
+    if (warpFrame > 0) {
+      const progress = 1 - warpFrame / 100; /* 0→1 as time passes */
+      const fade     = warpFrame / 100;      /* 1→0 (fading out)   */
+      const cx = canvas.width  / 2;
+      const cy = canvas.height / 2;
+      const WARP_COLORS = ['255,255,255', '192,132,252', '34,211,238', '236,72,153', '251,191,36'];
+
+      ctx.save();
+      for (let i = 0; i < 72; i++) {
+        const angle    = (i / 72) * Math.PI * 2;
+        const minDist  = 8  + progress * 50;
+        const maxDist  = minDist + 30 + progress * 450;
+        const x1 = cx + Math.cos(angle) * minDist;
+        const y1 = cy + Math.sin(angle) * minDist;
+        const x2 = cx + Math.cos(angle) * maxDist;
+        const y2 = cy + Math.sin(angle) * maxDist;
+
+        const col   = WARP_COLORS[i % WARP_COLORS.length];
+        const alpha = fade * (0.25 + 0.45 * (1 - progress));
+
+        const wg = ctx.createLinearGradient(x1, y1, x2, y2);
+        wg.addColorStop(0,   `rgba(${col},0)`);
+        wg.addColorStop(1,   `rgba(${col},${alpha})`);
+
+        ctx.strokeStyle = wg;
+        ctx.lineWidth   = 0.4 + (1 - progress) * 2.2;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+      ctx.restore();
+      warpFrame--;
+    }
+
+    requestAnimationFrame(drawStars);
+  }
+
+  drawStars();
+})();
+
+
+/* ============================================================
+   2. NAVBAR — shrink on scroll + hamburger toggle for mobile
+   ============================================================ */
+(function initNavbar() {
+  const navbar    = document.getElementById('navbar');
+  const hamburger = document.getElementById('hamburger');
+  const navLinks  = document.querySelector('.nav-links');
+
+  /* Shrink navbar background when user scrolls down */
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      navbar.style.padding = '10px 40px';
+      navbar.style.background = 'rgba(5, 0, 15, 0.92)';
+    } else {
+      navbar.style.padding = '16px 40px';
+      navbar.style.background = 'rgba(5, 0, 15, 0.7)';
+    }
+  });
+
+  /* Toggle mobile nav open/closed when hamburger is clicked */
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+
+  /* Close mobile nav when a link is clicked */
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+})();
+
+
+/* ============================================================
+   3. SCROLL REVEAL — elements with class "reveal" fade in
+      when they enter the viewport using IntersectionObserver.
+      We add the "reveal" class to all section children here
+      so the HTML stays cleaner.
+   ============================================================ */
+(function initScrollReveal() {
+  /* Add .reveal to every major element we want to animate in */
+  const targets = document.querySelectorAll(
+    '.about-card, .about-text, .skill-card, .project-card, .contact-card, .section-title, .section-sub, .beyond-card'
+  );
+  targets.forEach(el => el.classList.add('reveal'));
+
+  /* Observer fires when element reaches 10% visibility */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); /* only animate once */
+      }
+    });
+  }, { threshold: 0.1 });
+
+  targets.forEach(el => observer.observe(el));
+})();
+
+
+/* ============================================================
+   4. MINI GAME — Asteroid Dodger
+      - A spaceship moves around the canvas
+      - Asteroids fall faster and more frequently as score rises
+      - At score 10+: side asteroids join the chaos
+      - At score 20+: double spawns
+      - Controls: Arrow keys, WASD, or drag on mobile
+   ============================================================ */
+(function initGame() {
+  const canvas      = document.getElementById('gameCanvas');
+  const ctx         = canvas.getContext('2d');
+  const startBtn    = document.getElementById('startBtn');
+  const restartBtn  = document.getElementById('restartBtn');
+  const scoreEl     = document.getElementById('scoreDisplay');
+  const hiScoreEl   = document.getElementById('hiScoreDisplay');
+
+  /* Track whether the game canvas is visible on screen.
+     Arrow key scroll prevention activates whenever it's visible. */
+  let gameVisible = false;
+  const visObserver = new IntersectionObserver(entries => {
+    gameVisible = entries[0].isIntersecting;
+  }, { threshold: 0.3 });
+  visObserver.observe(canvas);
+
+  /* Game state variables */
+  let gameLoop, asteroidTimer, scoreTimer, diffTimer;
+  let running       = false;
+  let score         = 0;
+  let hiScore       = 0;
+  let asteroids     = [];
+  let particles     = [];
+  let spawnInterval = 900; /* ms between asteroid spawns — decreases over time */
+
+  /* Spaceship object */
+  const ship = {
+    x: canvas.width  / 2,
+    y: canvas.height - 60,
+    w: 28,
+    h: 28,
+    speed: 5,
+    keys: { left: false, right: false, up: false, down: false },
+  };
+
+  /* ---- Drawing helpers ---- */
+
+  /* Draw the spaceship as a glowing triangle */
+  function drawShip() {
+    ctx.save();
+    ctx.translate(ship.x, ship.y);
+
+    /* Glow effect */
+    ctx.shadowColor = '#a855f7';
+    ctx.shadowBlur  = 18;
+
+    ctx.fillStyle = '#c084fc';
+    ctx.beginPath();
+    ctx.moveTo(0, -ship.h / 2);        /* nose tip */
+    ctx.lineTo(-ship.w / 2, ship.h / 2); /* bottom left */
+    ctx.lineTo(ship.w / 2,  ship.h / 2); /* bottom right */
+    ctx.closePath();
+    ctx.fill();
+
+    /* Engine flame */
+    ctx.fillStyle = '#fbbf24';
+    ctx.shadowColor = '#fbbf24';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.moveTo(-8, ship.h / 2);
+    ctx.lineTo(8,  ship.h / 2);
+    ctx.lineTo(0,  ship.h / 2 + 12 + Math.random() * 6); /* flicker */
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  /* Draw a single asteroid as an irregular polygon */
+  function drawAsteroid(a) {
+    ctx.save();
+    ctx.translate(a.x, a.y);
+    ctx.rotate(a.rot);
+
+    ctx.shadowColor = '#ec4899';
+    ctx.shadowBlur  = 10;
+    ctx.fillStyle   = '#6b21a8';
+    ctx.strokeStyle = '#ec4899';
+    ctx.lineWidth   = 1.5;
+
+    /* Draw a rough polygon using pre-generated angle offsets */
+    ctx.beginPath();
+    a.shape.forEach((r, i) => {
+      const angle = (i / a.shape.length) * Math.PI * 2;
+      const px = Math.cos(angle) * r;
+      const py = Math.sin(angle) * r;
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    });
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  /* Draw explosion particles */
+  function drawParticles() {
+    particles.forEach(p => {
+      ctx.save();
+      ctx.globalAlpha = p.life / p.maxLife;
+      ctx.fillStyle   = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur  = 8;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  /* Draw idle / game-over screen */
+  function drawScreen(line1, line2) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    /* Gradient background */
+    const grad = ctx.createRadialGradient(
+      canvas.width / 2, canvas.height / 2, 0,
+      canvas.width / 2, canvas.height / 2, canvas.width
+    );
+    grad.addColorStop(0, '#0d002a');
+    grad.addColorStop(1, '#000005');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    /* Main text */
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font         = `bold 28px 'Orbitron', sans-serif`;
+    ctx.fillStyle    = '#c084fc';
+    ctx.shadowColor  = '#9333ea';
+    ctx.shadowBlur   = 20;
+    ctx.fillText(line1, canvas.width / 2, canvas.height / 2 - 20);
+
+    ctx.font         = `16px 'Inter', sans-serif`;
+    ctx.fillStyle    = '#a78bfa';
+    ctx.shadowBlur   = 0;
+    ctx.fillText(line2, canvas.width / 2, canvas.height / 2 + 20);
+  }
+
+  /* ---- Asteroid factory ----
+     fromSide = true means the asteroid enters from the left or right edge
+     instead of falling from the top — unlocked at score 10. */
+  function spawnAsteroid(fromSide = false) {
+    const size  = 18 + Math.random() * 26;
+    const shape = Array.from({ length: 10 }, () => size * (0.55 + Math.random() * 0.55));
+    /* Speed scales more aggressively with score than before */
+    const speed = 2.5 + score / 40 + Math.random() * 2.5;
+
+    if (fromSide) {
+      /* Spawn from left or right, travel horizontally with slight downward drift */
+      const fromLeft = Math.random() > 0.5;
+      asteroids.push({
+        x:        fromLeft ? -size : canvas.width + size,
+        y:        30 + Math.random() * (canvas.height - 60),
+        vx:       fromLeft ? speed : -speed,
+        vy:       (Math.random() - 0.3) * 1.5,
+        size, shape, rot: 0,
+        rotSpeed: (Math.random() - 0.5) * 0.07,
+        side: true,
+      });
+    } else {
+      asteroids.push({
+        x:        Math.random() * (canvas.width - 80) + 40,
+        y:        -size,
+        vx:       (Math.random() - 0.5) * 1.2, /* slight horizontal drift */
+        vy:       speed,
+        size, shape, rot: 0,
+        rotSpeed: (Math.random() - 0.5) * 0.07,
+        side: false,
+      });
+    }
+  }
+
+  /* Spawn one or two asteroids depending on difficulty */
+  function spawnWave() {
+    spawnAsteroid(false);
+    /* At score 10+ occasionally add a side asteroid */
+    if (score >= 10 && Math.random() < 0.45) spawnAsteroid(true);
+    /* At score 20+ always spawn a pair */
+    if (score >= 20) spawnAsteroid(Math.random() < 0.4);
+  }
+
+  /* Ramp up spawn rate every 5 seconds — min cap at 320ms */
+  function increaseDifficulty() {
+    if (!running) return;
+    spawnInterval = Math.max(320, spawnInterval - 80);
+    clearInterval(asteroidTimer);
+    asteroidTimer = setInterval(spawnWave, spawnInterval);
+  }
+
+  /* ---- Explosion particles ---- */
+  function explode(x, y) {
+    const colors = ['#fbbf24', '#ec4899', '#c084fc', '#22d3ee'];
+    for (let i = 0; i < 30; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const spd   = 2 + Math.random() * 5;
+      particles.push({
+        x, y,
+        vx:      Math.cos(angle) * spd,
+        vy:      Math.sin(angle) * spd,
+        r:       2 + Math.random() * 4,
+        color:   colors[Math.floor(Math.random() * colors.length)],
+        life:    40,
+        maxLife: 40,
+      });
+    }
+  }
+
+  /* ---- Collision detection — circle vs circle ----
+     Ship gets a small tight radius (8px) so only a direct hit counts.
+     Asteroids get 70% of their visual size so near-misses feel fair. */
+  function hitTest(a) {
+    const dx         = a.x - ship.x;
+    const dy         = a.y - ship.y;
+    const dist       = Math.sqrt(dx * dx + dy * dy);
+    const shipRadius = 8;               /* tight circle around ship center */
+    const astRadius  = a.size * 0.70;   /* slightly smaller than the visual */
+    return dist < shipRadius + astRadius;
+  }
+
+  /* ---- Main game update loop ---- */
+  function update() {
+    /* Clear and redraw background */
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const grad = ctx.createRadialGradient(
+      canvas.width / 2, canvas.height / 2, 0,
+      canvas.width / 2, canvas.height / 2, canvas.width
+    );
+    grad.addColorStop(0, '#0d002a');
+    grad.addColorStop(1, '#000005');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    /* Move ship based on held keys */
+    if (ship.keys.left  && ship.x - ship.w / 2 > 0)           ship.x -= ship.speed;
+    if (ship.keys.right && ship.x + ship.w / 2 < canvas.width) ship.x += ship.speed;
+    if (ship.keys.up    && ship.y - ship.h / 2 > 0)           ship.y -= ship.speed;
+    if (ship.keys.down  && ship.y + ship.h / 2 < canvas.height) ship.y += ship.speed;
+
+    /* Move and rotate asteroids using vx/vy velocity */
+    asteroids.forEach(a => {
+      a.x   += a.vx;
+      a.y   += a.vy;
+      a.rot += a.rotSpeed;
+    });
+
+    /* Remove asteroids that have left the canvas on any edge */
+    asteroids = asteroids.filter(a =>
+      a.y - a.size < canvas.height &&
+      a.x + a.size > 0 &&
+      a.x - a.size < canvas.width
+    );
+
+    /* Update particles */
+    particles.forEach(p => {
+      p.x    += p.vx;
+      p.y    += p.vy;
+      p.vy   += 0.15; /* gravity */
+      p.life -= 1;
+    });
+    particles = particles.filter(p => p.life > 0);
+
+    /* Draw everything */
+    asteroids.forEach(drawAsteroid);
+    drawParticles();
+    drawShip();
+
+    /* Score + difficulty label */
+    const level = score < 10 ? 'EASY' : score < 20 ? 'MEDIUM' : score < 35 ? 'HARD' : '💀 INSANE';
+    const lvlColor = score < 10 ? '#22d3ee' : score < 20 ? '#fbbf24' : score < 35 ? '#f97316' : '#ef4444';
+    ctx.font      = `bold 13px 'Orbitron', sans-serif`;
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillText(`Score: ${score}`, canvas.width - 16, 24);
+    ctx.fillStyle = lvlColor;
+    ctx.font      = `bold 11px 'Orbitron', sans-serif`;
+    ctx.fillText(level, canvas.width - 16, 42);
+
+    /* Check collision with any asteroid */
+    if (asteroids.some(hitTest)) {
+      endGame();
+      return;
+    }
+
+    gameLoop = requestAnimationFrame(update);
+  }
+
+  /* ---- Start game ---- */
+  function startGame() {
+    score         = 0;
+    asteroids     = [];
+    particles     = [];
+    spawnInterval = 900;
+    ship.x        = canvas.width / 2;
+    ship.y        = canvas.height - 60;
+    ship.keys     = { left: false, right: false, up: false, down: false };
+
+    scoreEl.textContent    = score;
+    startBtn.style.display   = 'none';
+    restartBtn.style.display = 'none';
+    running = true;
+
+    asteroidTimer = setInterval(spawnWave, spawnInterval);
+    scoreTimer    = setInterval(() => { score++; scoreEl.textContent = score; }, 1000);
+    /* Ramp up difficulty every 5 seconds */
+    diffTimer     = setInterval(increaseDifficulty, 5000);
+
+    gameLoop = requestAnimationFrame(update);
+  }
+
+  /* ---- End game ---- */
+  function endGame() {
+    running = false;
+    cancelAnimationFrame(gameLoop);
+    clearInterval(asteroidTimer);
+    clearInterval(scoreTimer);
+    clearInterval(diffTimer);
+
+    if (score > hiScore) {
+      hiScore = score;
+      hiScoreEl.textContent = hiScore;
+    }
+
+    explode(ship.x, ship.y);
+
+    /* Show explosion particles for a moment before the game-over screen */
+    setTimeout(() => {
+      drawScreen('💥 GAME OVER', `Score: ${score}  |  Best: ${hiScore}`);
+      restartBtn.style.display = 'inline-block';
+    }, 800);
+  }
+
+  /* ---- Button event listeners ---- */
+  startBtn.addEventListener('click',   startGame);
+  restartBtn.addEventListener('click', startGame);
+
+  /* ---- Keyboard controls ----
+     Block arrow-key page scrolling any time the game canvas is visible
+     on screen — not just when the game is actively running. */
+  const arrowKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+
+  window.addEventListener('keydown', e => {
+    if (gameVisible && arrowKeys.includes(e.key)) e.preventDefault();
+
+    if (!running) return;
+    if (e.key === 'ArrowLeft'  || e.key === 'a') ship.keys.left  = true;
+    if (e.key === 'ArrowRight' || e.key === 'd') ship.keys.right = true;
+    if (e.key === 'ArrowUp'    || e.key === 'w') ship.keys.up    = true;
+    if (e.key === 'ArrowDown'  || e.key === 's') ship.keys.down  = true;
+  });
+
+  window.addEventListener('keyup', e => {
+    if (e.key === 'ArrowLeft'  || e.key === 'a') ship.keys.left  = false;
+    if (e.key === 'ArrowRight' || e.key === 'd') ship.keys.right = false;
+    if (e.key === 'ArrowUp'    || e.key === 'w') ship.keys.up    = false;
+    if (e.key === 'ArrowDown'  || e.key === 's') ship.keys.down  = false;
+  });
+
+  /* ---- Touch / mobile controls: tap side of canvas to move ---- */
+  let touchStartX = null;
+  let touchStartY = null;
+
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const t = e.touches[0];
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!running) return;
+    const t = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    /* Move ship to where the finger is (clamped within canvas) */
+    ship.x = Math.max(ship.w / 2, Math.min(canvas.width  - ship.w / 2, t.clientX - rect.left));
+    ship.y = Math.max(ship.h / 2, Math.min(canvas.height - ship.h / 2, t.clientY - rect.top));
+  }, { passive: false });
+
+  /* Draw initial idle screen */
+  drawScreen('🚀 Asteroid Dodger', 'Press Start to play!');
+})();
+
+
+/* ============================================================
+   5. MEME GENERATOR
+      - Pre-loaded meme template images (using picsum / placeholders
+        since we can't guarantee specific meme URLs — users can
+        add real meme image URLs to the TEMPLATES array below)
+      - User picks a template, types top/bottom text
+      - Canvas renders image + bold impact-style text
+      - User can download the result
+   ============================================================ */
+(function initMemeGenerator() {
+  const memeCanvas     = document.getElementById('memeCanvas');
+  const memeCtx        = memeCanvas.getContext('2d');
+  const topTextInput   = document.getElementById('topText');
+  const bottomTextInput= document.getElementById('bottomText');
+  const fontSizeSlider = document.getElementById('fontSize');
+  const fontSizeVal    = document.getElementById('fontSizeVal');
+  const generateBtn    = document.getElementById('generateMeme');
+  const downloadBtn    = document.getElementById('downloadMeme');
+  const templatesEl    = document.getElementById('memeTemplates');
+
+  /* Meme templates — all sourced from imgflip's public image CDN.
+     Add more by pasting any imgflip image URL into this array! */
+  const TEMPLATES = [
+    { label: 'Drake',              url: 'https://i.imgflip.com/30b1gx.jpg'  },
+    { label: 'Distracted BF',      url: 'https://i.imgflip.com/1ur9b0.jpg'  },
+    { label: 'Change My Mind',     url: 'https://i.imgflip.com/24y43o.jpg'  },
+    { label: 'This is Fine',       url: 'https://i.imgflip.com/wxica.jpg'   },
+    { label: 'Two Buttons',        url: 'https://i.imgflip.com/1g8my4.jpg'  },
+    { label: 'Expanding Brain',    url: 'https://i.imgflip.com/1jwhww.jpg'  },
+    { label: 'Surprised Pikachu',  url: 'https://i.imgflip.com/2kbn1e.jpg'  },
+    { label: 'Woman Yelling Cat',  url: 'https://i.imgflip.com/345v97.jpg'  },
+    { label: 'Gru Plan',           url: 'https://i.imgflip.com/26am.jpg'    },
+    { label: 'Galaxy Brain',       url: 'https://i.imgflip.com/3lmzyx.jpg'  },
+    { label: 'Always Has Been',    url: 'https://i.imgflip.com/46e43q.jpg'  },
+    { label: 'Hide the Pain',      url: 'https://i.imgflip.com/gk5el.jpg'   },
+    { label: 'One Does Not',       url: 'https://i.imgflip.com/1bij.jpg'    },
+    { label: 'Success Kid',        url: 'https://i.imgflip.com/1bhk.jpg'    },
+    { label: 'Everywhere',         url: 'https://i.imgflip.com/1o00in.jpg'  },
+    { label: 'Batman Slapping',    url: 'https://i.imgflip.com/9ehk.jpg'    },
+    { label: 'Oprah You Get',      url: 'https://i.imgflip.com/3lmzyx.jpg'  },
+    { label: 'Sad Affleck',        url: 'https://i.imgflip.com/wx16a.jpg'   },
+    { label: 'Roll Safe',          url: 'https://i.imgflip.com/1h7in3.jpg'  },
+    { label: 'Waiting Skeleton',   url: 'https://i.imgflip.com/2fm6x.jpg'   },
+    { label: 'Disaster Girl',      url: 'https://i.imgflip.com/23ls.jpg'    },
+    { label: 'Ancient Aliens',     url: 'https://i.imgflip.com/xxy0x.jpg'   },
+    { label: 'UNO Draw 25',        url: 'https://i.imgflip.com/3lmzyx.jpg'  },
+    { label: 'Monkey Puppet',      url: 'https://i.imgflip.com/3oevdk.jpg'  },
+    { label: 'Blinking Guy',       url: 'https://i.imgflip.com/3cb6dy.jpg'  },
+    { label: 'Think About It',     url: 'https://i.imgflip.com/1otk96.jpg'  },
+    { label: 'Mocking Spongebob',  url: 'https://i.imgflip.com/1otk96.jpg'  },
+    { label: 'Running Away',       url: 'https://i.imgflip.com/3vfmyf.jpg'  },
+    { label: 'Panik Kalm',         url: 'https://i.imgflip.com/3whkl7.jpg'  },
+    { label: 'They\'re the Same',  url: 'https://i.imgflip.com/4hyt0n.jpg'  },
+  ];
+
+  let selectedImage = null; /* the currently loaded Image object */
+  let activeThumb   = null; /* the currently selected thumbnail element */
+
+  /* ---- Build thumbnail grid ---- */
+  TEMPLATES.forEach((tpl, i) => {
+    const img = document.createElement('img');
+    img.src   = tpl.url;
+    img.alt   = tpl.label;
+    img.title = tpl.label;
+    img.className = 'meme-thumb';
+
+    img.addEventListener('click', () => {
+      /* Deselect previous thumb */
+      if (activeThumb) activeThumb.classList.remove('active');
+      img.classList.add('active');
+      activeThumb = img;
+
+      /* Load the full image into memory */
+      const full = new Image();
+      full.crossOrigin = 'anonymous'; /* needed to draw external images on canvas */
+      full.src = tpl.url;
+      full.onload = () => {
+        selectedImage = full;
+        /* Auto-preview once the image loads */
+        renderMeme();
+      };
+      full.onerror = () => {
+        /* Fallback: draw a placeholder if the image can't load */
+        selectedImage = null;
+        memeCtx.fillStyle = '#1a004a';
+        memeCtx.fillRect(0, 0, memeCanvas.width, memeCanvas.height);
+        memeCtx.fillStyle = '#a78bfa';
+        memeCtx.font = '20px Inter, sans-serif';
+        memeCtx.textAlign = 'center';
+        memeCtx.fillText('Image failed to load — try another!', memeCanvas.width / 2, memeCanvas.height / 2);
+      };
+    });
+
+    templatesEl.appendChild(img);
+  });
+
+  /* ---- Render meme onto canvas ---- */
+  function renderMeme() {
+    const fontSize = parseInt(fontSizeSlider.value);
+    const topText  = topTextInput.value.trim().toUpperCase();
+    const botText  = bottomTextInput.value.trim().toUpperCase();
+
+    /* Clear canvas */
+    memeCtx.clearRect(0, 0, memeCanvas.width, memeCanvas.height);
+
+    /* Draw meme image scaled to canvas */
+    if (selectedImage) {
+      memeCtx.drawImage(selectedImage, 0, 0, memeCanvas.width, memeCanvas.height);
+    } else {
+      /* No image selected yet — draw a placeholder */
+      memeCtx.fillStyle = '#1a004a';
+      memeCtx.fillRect(0, 0, memeCanvas.width, memeCanvas.height);
+      memeCtx.fillStyle = '#6b6b8f';
+      memeCtx.font      = '18px Inter, sans-serif';
+      memeCtx.textAlign = 'center';
+      memeCtx.fillText('← Pick a template to start!', memeCanvas.width / 2, memeCanvas.height / 2);
+      return;
+    }
+
+    /* Helper: draw bold outlined impact-font text (classic meme style) */
+    function drawMemeText(text, x, y) {
+      if (!text) return;
+      memeCtx.font         = `900 ${fontSize}px Impact, Arial Black, sans-serif`;
+      memeCtx.textAlign    = 'center';
+      memeCtx.textBaseline = 'middle';
+
+      /* Black outline for readability */
+      memeCtx.strokeStyle = '#000';
+      memeCtx.lineWidth   = fontSize / 8;
+      memeCtx.lineJoin    = 'round';
+      memeCtx.strokeText(text, x, y);
+
+      /* White fill */
+      memeCtx.fillStyle = '#ffffff';
+      memeCtx.fillText(text, x, y);
+    }
+
+    const cx = memeCanvas.width / 2;
+
+    /* Draw top text near the top */
+    drawMemeText(topText, cx, fontSize / 2 + 16);
+
+    /* Draw bottom text near the bottom */
+    drawMemeText(botText, cx, memeCanvas.height - fontSize / 2 - 16);
+  }
+
+  /* ---- Live preview as user types ---- */
+  topTextInput.addEventListener('input',    renderMeme);
+  bottomTextInput.addEventListener('input', renderMeme);
+  fontSizeSlider.addEventListener('input',  () => {
+    fontSizeVal.textContent = fontSizeSlider.value;
+    renderMeme();
+  });
+
+  /* ---- Generate button ---- */
+  generateBtn.addEventListener('click', () => {
+    renderMeme();
+    /* Show download button after generating */
+    downloadBtn.style.display = 'inline-block';
+  });
+
+  /* ---- Download button — exports canvas as PNG ---- */
+  downloadBtn.addEventListener('click', () => {
+    const link    = document.createElement('a');
+    link.download = 'asia-meme.png';
+    link.href     = memeCanvas.toDataURL('image/png');
+    link.click();
+  });
+
+  /* Draw initial placeholder */
+  renderMeme();
+})();
+
+
+/* ============================================================
+   6. CONTACT FORM — submits to Formspree via fetch so the
+      page never reloads. Shows a success or error message.
+   ============================================================ */
+(function initContactForm() {
+  const form      = document.getElementById('contactForm');
+  const submitBtn = document.getElementById('formSubmitBtn');
+  const statusEl  = document.getElementById('formStatus');
+
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); /* stop the normal browser form submission */
+
+    /* Basic client-side validation */
+    if (!form.checkValidity()) {
+      statusEl.textContent = '⚠️ Please fill in all required fields.';
+      statusEl.className   = 'form-status error';
+      return;
+    }
+
+    /* Show loading state */
+    submitBtn.disabled     = true;
+    submitBtn.textContent  = 'Sending... ✨';
+    statusEl.textContent   = '';
+    statusEl.className     = 'form-status';
+
+    try {
+      /* Send form data as JSON to Formspree */
+      const response = await fetch(form.action, {
+        method:  'POST',
+        headers: { 'Accept': 'application/json' },
+        body:    new FormData(form),
+      });
+
+      if (response.ok) {
+        /* Success — clear the form and show a thank-you message */
+        form.reset();
+        submitBtn.textContent = 'Message Sent! 🚀';
+        statusEl.textContent  = '✅ Thank you! I\'ll get back to you soon.';
+        statusEl.className    = 'form-status success';
+
+        /* Re-enable button after 4 seconds */
+        setTimeout(() => {
+          submitBtn.disabled    = false;
+          submitBtn.textContent = 'Send Message 🚀';
+        }, 4000);
+
+      } else {
+        /* Formspree returned an error */
+        throw new Error('Form submission failed');
+      }
+
+    } catch (err) {
+      /* Network error or Formspree error */
+      submitBtn.disabled    = false;
+      submitBtn.textContent = 'Send Message 🚀';
+      statusEl.textContent  = '❌ Something went wrong. Please email me directly at asiaidrees283@gmail.com';
+      statusEl.className    = 'form-status error';
+    }
+  });
+})();
